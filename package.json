@@ -1,0 +1,19 @@
+{
+  "name": "karmabot",
+  "version": "1.0.0",
+  "description": "A bot to regulate karma",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "irc",
+    "karma"
+  ],
+  "author": "Lars Bokkers",
+  "license": "MIT",
+  "dependencies": {
+    "irc-colors": "^1.2.0",
+    "irc-message": "^3.0.2"
+  }
+}
