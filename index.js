@@ -73,9 +73,11 @@ client.addListener('message', function(from, to, message) {
 
                         // Does karma exists?
                         if(karma.hasOwnProperty(subj)) {
-                                client.say(from, 'Karma for ' + subj + ': ' + karma[subj]);
+                            var target = to === client.getNick() ? from : to;
+                            
+                                client.say(target, 'Karma for ' + subj + ': ' + karma[subj]);
                         } else {
-                                client.say(from, 'I have no karma for ' + subj + '.');
+                                client.say(target, 'I have no karma for ' + subj + '.');
                         }
                 } else if(text.endsWith('++')) {
                         if(to === client.getNick()) {
