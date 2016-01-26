@@ -71,10 +71,6 @@ function reportKarma(subj, from, to, message) {
 
 
 client.addListener('message', function(from, to, message) {
-        if(to === client.getNick()) {
-            client.say(from, "Cannot privately modify karma.");
-            return;
-        }
     
 		var text = IrcColor.stripColorsAndStyle(message);
         if(text.startsWith('!')) {
@@ -89,6 +85,11 @@ client.addListener('message', function(from, to, message) {
                                 client.say(to, 'I have no karma for ' + subj + '.');
                         }
                 } else if(text.endsWith('++')) {
+                        if(to === client.getNick()) {
+                            client.say(from, "Cannot privately modify karma.");
+                            return;
+                        }
+                        
                         var subj = text.substr(1, text.length - 3);
 
                         // Check if karma for subj already exists.
@@ -103,12 +104,20 @@ client.addListener('message', function(from, to, message) {
                         console.log(from + ': ' + message + ' -> ' + subj + ': ' + karma[subj]);
                         var channels = client.getChannels();
                         for(var channelName in channels) {
-                            client.say(channelName, '['+to+':'+from+'] increased karma for ' + subj + ' to ' + karma[subj])
+                            if(channelName === to)
+                                client.say(channelName, from + ' increased karma for ' + subj + ' to ' + karma[subj]);
+                            else
+                                client.say(channelName, to+':'+from+' increased karma for ' + subj + ' to ' + karma[subj])
                         }
 
                         // Save karma
                         saveKarma(karma);
                 } else if(text.endsWith('--')) {
+                        if(to === client.getNick()) {
+                            client.say(from, "Cannot privately modify karma.");
+                            return;
+                        }
+                        
                         var subj = text.substr(1, text.length - 3);
 
                         // Check if karma for subj already exists.
@@ -123,7 +132,10 @@ client.addListener('message', function(from, to, message) {
                         console.log(from + ': ' + message + ' -> ' + subj + ': ' + karma[subj]);
                         var channels = client.getChannels();
                         for(var channelName in channels) {
-                            client.say(channelName, '['+to+':'+from+'] decreased karma for ' + subj + ' to ' + karma[subj]);
+                            if(channelName === to)
+                                client.say(channelName, from + ' dcreased karma for ' + subj + ' to ' + karma[subj]);
+                            else
+                                client.say(channelName, to+':'+from+' decreased karma for ' + subj + ' to ' + karma[subj])
                         }
 
                         // Save karma.
