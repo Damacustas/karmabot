@@ -62,13 +62,6 @@ var client = new IrcClient({
 		nick: 'karmabot-dev'
 });
 
-function reportKarma(subj, from, to, message) {
-    client.say(to, 'Karma for ' + subj + ': ' + karma[subj]);
-        
-        // log.
-        console.log(from + ': ' + message + ' -> ' + subj + ': ' + karma[subj]);
-}
-
 
 client.addListener('message', function(from, to, message) {
     
@@ -80,9 +73,9 @@ client.addListener('message', function(from, to, message) {
 
                         // Does karma exists?
                         if(karma.hasOwnProperty(subj)) {
-                                reportKarma(subj, from, to, text);
+                                client.say(from, 'Karma for ' + subj + ': ' + karma[subj]);
                         } else {
-                                client.say(to, 'I have no karma for ' + subj + '.');
+                                client.say(from, 'I have no karma for ' + subj + '.');
                         }
                 } else if(text.endsWith('++')) {
                         if(to === client.getNick()) {
