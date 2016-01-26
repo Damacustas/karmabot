@@ -126,7 +126,7 @@ client.addListener('message', function(from, to, message) {
                         var channels = client.getChannels();
                         for(var channelName in channels) {
                             if(channelName === to)
-                                client.say(channelName, from + ' dcreased karma for ' + subj + ' to ' + karma[subj]);
+                                client.say(channelName, from + ' decreased karma for ' + subj + ' to ' + karma[subj]);
                             else
                                 client.say(channelName, to+':'+from+' decreased karma for ' + subj + ' to ' + karma[subj])
                         }
