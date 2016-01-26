@@ -55,20 +55,27 @@ try {
 
 // Create irc client.
 var client = new IrcClient({
-        username: 'karmabot',
-        realname: 'Karma Bot',
+        username: 'karmabot-dev',
+        realname: 'Karma Bot Development',
         port: 6697,
 		host: 'irc.kepow.org',
-		nick: 'karmabot'
+		nick: 'karmabot-dev'
 });
 
 function reportKarma(subj, from, to, message) {
-        client.say(to, 'Karma for ' + subj + ': ' + karma[subj]);
+    client.say(to, 'Karma for ' + subj + ': ' + karma[subj]);
+        
+        // log.
         console.log(from + ': ' + message + ' -> ' + subj + ': ' + karma[subj]);
 }
 
 
 client.addListener('message', function(from, to, message) {
+        if(to === client.getNick()) {
+            client.say(from, "Cannot privately modify karma.");
+            return;
+        }
+    
 		var text = IrcColor.stripColorsAndStyle(message);
         if(text.startsWith('!')) {
                 if(text.endsWith('?')) {
@@ -93,7 +100,11 @@ client.addListener('message', function(from, to, message) {
                         karma[subj]++;
 
                         // Report karma
-                        reportKarma(subj, from, to, text);
+                        console.log(from + ': ' + message + ' -> ' + subj + ': ' + karma[subj]);
+                        var channels = client.getChannels();
+                        for(var channelName in channels) {
+                            client.say(channelName, '['+to+':'+from+'] increased karma for ' + subj + ' to ' + karma[subj])
+                        }
 
                         // Save karma
                         saveKarma(karma);
@@ -109,7 +120,11 @@ client.addListener('message', function(from, to, message) {
                         karma[subj]--;
 
                         // Report karma
-                        reportKarma(subj, from, to, text);
+                        console.log(from + ': ' + message + ' -> ' + subj + ': ' + karma[subj]);
+                        var channels = client.getChannels();
+                        for(var channelName in channels) {
+                            client.say(channelName, '['+to+':'+from+'] decreased karma for ' + subj + ' to ' + karma[subj]);
+                        }
 
                         // Save karma.
                         saveKarma(karma);

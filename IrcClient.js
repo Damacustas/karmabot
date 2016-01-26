@@ -17,7 +17,6 @@ function IrcClient(options) {
 				break;
 				
 			case 'JOIN':
-				console.log(JSON.stringify(message, null, 2));
 				if(getNick(message.prefix) === self.options.nick) {
 					self.updateChannel(message.params[0], true);
 				}
@@ -28,6 +27,10 @@ function IrcClient(options) {
 			case 'PRIVMSG':
 				self.emit('message', getNick(message.prefix), message.params[0], message.params[1], message);
 				break;
+                
+            case 'INVITE':
+                self.join(message.params[1]);
+                break;
 		}
 	});
 }
@@ -47,10 +50,24 @@ IrcClient.prototype.updateChannel = function(channelName, create) {
 	};
 }
 
+IrcClient.prototype.getNick = function() {
+    return this.options.nick;
+}
+
+IrcClient.prototype.getChannels = function() {
+    return this.channels;
+}
+
 IrcClient.prototype.say = function(to, text) {
 	var self = this;
 	
 	self.sendRaw('PRIVMSG ' + to + ' ' + text + "\r\n");
+}
+
+IrcClient.prototype.join = function(channel) {
+    var self = this;
+    
+    self.sendRaw('JOIN ' + channel + '\r\n');
 }
 
 IrcClient.prototype.connect = function() {
